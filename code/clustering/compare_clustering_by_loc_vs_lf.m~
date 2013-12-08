@@ -1,0 +1,30 @@
+
+
+% compare clustering by latent factors of ratings matrix vs. clustering by
+% location
+% Use self-organizing MAP (SOM) for both, although this can be easily
+% changed
+
+
+function [cscoresloc, cscoreslf,lfloc,lf,cmlf,cmloc,mnetloc,mnetlf] = compare_clustering_by_loc_vs_lf(ratings,ulocs,lfindex,popindex,dim1,dim2,method, metric, display) 
+
+[mnetloc,lfloc,cmloc,cscoresloc] = som_lfmat(ulocs,ratings,lfindex,popindex,dim1,dim2,display);  % cluster users by loc using SOM
+
+[mnetlf,lf,cmlf,cscoreslf] = som_lfmat_lfactors(ratings,lfindex,popindex,dim1,dim2,display);
+
+[Cmkm, histkm] = flat_cluster_users(ulocs, method, metric, dim1*dim2); % cluster users by location using kmeans 
+
+
+
+figure; 
+
+plot(cscoreslf,'r-','LineWidth', 2); hold on; 
+plot(cscoresloc,'b-','LineWidth', 2); 
+legend('User Factors', 'User Location');
+
+xlabel('Movies', 'FontSize', 18); 
+
+title(sprintf('Mean Movie Cache Ratings removing %d top movies', popindex),'FontSize', 18); 
+grid on; 
+
+return; 

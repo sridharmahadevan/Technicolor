@@ -3,10 +3,10 @@
 % do a hierarchical clustering of users using MATLAB's clustering methods 
 % Sridhar Mahadevan, November 29 2013
 
-function [Cm, hist] = flat_cluster_users(user_locs, method, distance, maxclusters) 
+function [Cm, hist] = flat_cluster_users(user_locs, method, distance, maxclusters, display) 
 
 % INPUT: latitude-longitude locations of users
-% user_locs is an N x 2 matrix
+% user_locs is an N x k matrix (k=2 for spatial loc) 
 
 % method is a particular way of computing distance between clusters. From
 % MATLAB's documentation of linkage: 
@@ -46,27 +46,28 @@ if nargin < 2
     method = 'complete'; 
     distance = 'euclidean'; 
     maxclusters = 10; 
+    display = 0; 
 end; 
 
-Cm = clusterdata(user_locs,'distance', distance, 'linkage', method, 'maxclust', maxclusters); 
+Cm = clusterdata(user_locs,'distance', distance, 'linkage', method, 'maxclust', maxclusters);
 
-
-figure(10); subplot(2,3,1); scatter(user_locs(:,2),user_locs(:,1),30,Cm);  % longitude on x axis
-title('Clustering of Users', 'FontSize', 18); grid on; 
-axis([-130,-60,25,50]);  % zoom out to US map
-ylabel('Latitude', 'FontSize', 18); 
-xlabel('Longitude', 'FontSize', 18); 
-drawnow; 
-
-% compute size of each clustering and plot it
-
-hist = zeros(maxclusters,1); 
+hist = zeros(maxclusters,1);
 
 for i=1:maxclusters
-    hist(i) = length(find(Cm==i)); % how many in cluster i 
-end; 
+    hist(i) = length(find(Cm==i)); % how many in cluster i
+end;
 
-figure(10); subplot(2,3,2); bar(hist); title('Histogram of Clusters', 'FontSize', 18); drawnow; 
+if display 
+
+    figure(10); subplot(2,3,1); scatter(user_locs(:,2),user_locs(:,1),30,Cm);  % longitude on x axis
+    title('Clustering of Users', 'FontSize', 18); grid on; 
+    axis([-130,-60,25,50]);  % zoom out to US map
+    ylabel('Latitude', 'FontSize', 18); 
+    xlabel('Longitude', 'FontSize', 18); 
+    drawnow; 
+
+    figure(10); subplot(2,3,2); bar(hist); title('Histogram of Clusters', 'FontSize', 18); drawnow;
+end;
 
 % another way to do hierarchical clustering 
 %Zm = linkage(user_locs,method,metric); 

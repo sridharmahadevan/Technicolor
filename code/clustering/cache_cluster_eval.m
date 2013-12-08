@@ -29,13 +29,17 @@
 % and find a threshold from which the movies are considered too ?uniform? to be included in the analysis.
 % Remove these movies. 
 
-function cache_scores = cache_cluster_eval(clustering, ratings)
+function cache_scores = cache_cluster_eval(clustering, ratings, display)
 
 % INPUT: given a ratings matrix of size num_users x movies_rated (or
 % watched) and a clustering of the users, 
 
 % OUTPUT: return a score weighting per movie of keeping it in a cache for
 % every cluster 
+
+if nargin < 3
+    display = 0; 
+end; 
 
 maxclusters = max(clustering); % determine number of clusters 
 
@@ -65,6 +69,9 @@ for i=1:nummovies
     
 end; 
 
-figure(12); plot(cache_scores, 'r-.', 'LineWidth', 2); title('Mean Movie Cache Ratings', 'FontSize', 18); 
-xlabel('Movie Index', 'FontSize', 18); grid on; 
+if display
+
+    figure;  plot(cache_scores, 'r-.', 'LineWidth', 2); title('Mean Movie Cache Ratings', 'FontSize', 18); 
+    xlabel('Movie Index', 'FontSize', 18); grid on; 
+end; 
 
